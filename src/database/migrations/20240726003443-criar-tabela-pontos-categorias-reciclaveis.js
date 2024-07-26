@@ -3,7 +3,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
-    await queryInterface.createTable('pontos_reciclaveis', {
+    await queryInterface.createTable('pontos_categorias_reciclaveis', {
       ponto_coleta_id: {
         type: Sequelize.INTEGER,
         references: { 
@@ -18,7 +18,7 @@ module.exports = {
       id_material: {
         type: Sequelize.INTEGER,
         references: { 
-          model: 'tipos_reciclaveis', 
+          model: 'categorias_reciclaveis', 
           key: 'id' 
         },
         allowNull: false,
@@ -38,6 +38,6 @@ module.exports = {
   },
 
   async down (queryInterface, Sequelize) {
-    await queryInterface.dropTable('pontos_reciclaveis');
+    await queryInterface.dropTable('pontos_categorias_reciclaveis');
   }
 };

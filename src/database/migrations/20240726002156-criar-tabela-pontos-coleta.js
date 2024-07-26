@@ -23,12 +23,12 @@ module.exports = {
         allowNull: false
       },
       numero: {
-        type: Sequelize.STRING,
+        type: Sequelize.INTEGER,
         allowNull: false
       },
       complemento: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: true
       },
       bairro: {
         type: Sequelize.STRING,
