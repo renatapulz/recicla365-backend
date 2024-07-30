@@ -35,15 +35,14 @@ class LoginController {
             const token = sign({
                 id: usuario.id
             },
-                process.env.DB_SECRET,
+                process.env.DB_JWT_SECRET,
                 {
                     expiresIn: '1d'
                 }
             );
 
             response.json({
-                token: token,
-                nome: usuario.nome
+                token: token
             });
 
         } catch (error) {
