@@ -4,6 +4,12 @@
 module.exports = {
   async up (queryInterface, Sequelize) {
     await queryInterface.createTable('pontos_categorias_reciclaveis', {
+      id: {
+        type: Sequelize.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+        allowNull: false
+      },
       ponto_coleta_id: {
         type: Sequelize.INTEGER,
         references: { 

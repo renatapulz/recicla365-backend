@@ -1,6 +1,7 @@
 const { DataTypes } = require('sequelize')
 const connection = require('../database/connection')
 const Usuario = require('./Usuario')
+const CategoriaReciclavel = require('./CategoriaReciclavel');
 
 const PontoColeta = connection.define("pontos_coleta", {
     usuario_id: {
@@ -9,6 +10,14 @@ const PontoColeta = connection.define("pontos_coleta", {
             model: Usuario,
             key: 'id'
         },
+        allowNull: false
+    },
+    nomePonto: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    descricaoPonto: {
+        type: DataTypes.STRING,
         allowNull: false
     },
     logradouro: {
@@ -51,6 +60,12 @@ const PontoColeta = connection.define("pontos_coleta", {
         type: DataTypes.TEXT,
         allowNull: true
     }
+});
+// Associação com minha tabela intermediária
+PontoColeta.belongsToMany(CategoriaReciclavel, {
+    through: 'pontos_categorias_reciclaveis',
+    foreignKey: 'ponto_coleta_id',
+    otherKey: 'categoria_reciclavel_id'
 });
 
 module.exports = PontoColeta
