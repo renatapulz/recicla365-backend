@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize')
 const connection = require('../database/connection')
+const bcrypt = require('bcryptjs');
 
 const Usuario = connection.define("usuarios", {
     nome: {
@@ -55,6 +56,12 @@ const Usuario = connection.define("usuarios", {
     cep: {
         type: DataTypes.STRING,
         allowNull: false
+    }
+}, {
+    hooks: {
+        beforeCreate: async (usuario) => {
+            usuario.senha = await bcrypt.hash(usuario.senha, 10);
+        }
     }
 });
 

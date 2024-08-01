@@ -8,5 +8,5 @@ module.exports = {
     password: process.env.DB_PASSWORD,
     database: process.env.DB_DATABASE,
     port: process.env.DB_PORT,
-    secret: process.env.DB_SECRET
+    secret: process.env.DB_JWT_SECRET
 }

@@ -18,6 +18,14 @@ module.exports = {
         },
         allowNull: false
       },
+      nomePonto: {
+        type: Sequelize.STRING,
+        allowNull: false
+      },
+      descricaoPonto: {
+        type: Sequelize.STRING,
+        allowNull: false
+      },
       logradouro: {
         type: Sequelize.STRING,
         allowNull: false
