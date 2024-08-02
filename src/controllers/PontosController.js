@@ -2,6 +2,7 @@ const PontoColeta = require('../models/PontoColeta')
 const PontoCategoriaReciclavel = require('../models/PontoCategoriaReciclavel')
 const CategoriaReciclavel = require('../models/CategoriaReciclavel')
 const yup = require('yup')
+const { getCoordinates, getGoogleMapsLink } = require('../services/map.service');
 
 class PontosController {
     async create(req, res) {
@@ -19,20 +20,31 @@ class PontosController {
                 .of(yup.number().integer())
                 .min(1, 'O tipo de material aceito é um campo obrigatório.') // Obrigatório pelo menos um material
                 .required('O tipo de material aceito é um campo obrigatório.'),
-            latitude: yup.number(),
-            longitude: yup.number(),
-            url_google_maps: yup.string()
+            latitude: yup.number().nullable(),
+            longitude: yup.number().nullable()
         });
+
         try {
             await schema.validate(req.body, { abortEarly: false });
 
             const usuario_id = req.usuarioId; // Obtendo o ID do usuário do middleware validaToken
-            const pontoColetaComId = {
+            const { cep, latitude, longitude, categoriasReciclaveis } = req.body;
+            
+            let pontoColetaData = {
                 ...req.body,
                 usuario_id, // Adicionando o ID do usuário autenticado
             };
 
-            const { categoriasReciclaveis } = req.body; // desestruturo os tipos de material do restante
+            // Se a latitude e longitude não forem fornecidas, busca pela API
+            if (!latitude || !longitude) {
+                const local = await getCoordinates(cep);
+                pontoColetaData = {
+                    ...pontoColetaData,
+                    latitude: local.lat,
+                    longitude: local.lon,
+                };
+            }
+
             const categoriasValidas = await CategoriaReciclavel.findAll({
                 where: { id: categoriasReciclaveis }
             });
@@ -40,7 +52,12 @@ class PontosController {
                 return res.status(400).json({ mensagem: 'Um ou mais tipos de materiais recicláveis não foram cadastrados.' });
             }
 
-            const pontoColeta = await PontoColeta.create(pontoColetaComId);
+            const pontoColeta = await PontoColeta.create(pontoColetaData);
+
+            // Gera a URL do Google Maps e atualiza o ponto de coleta
+            const googleMapsLink = await getGoogleMapsLink({ lat: pontoColeta.latitude, lon: pontoColeta.longitude });
+            pontoColeta.url_google_maps = googleMapsLink;
+            await pontoColeta.save();
 
             // Adiciona as associações na tabela intermediária
             const associacoes = categoriasReciclaveis.map(idCategoria => ({
