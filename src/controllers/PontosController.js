@@ -29,27 +29,30 @@ class PontosController {
 
             const usuario_id = req.usuarioId; // Obtendo o ID do usuário do middleware validaToken
             const { cep, latitude, longitude, categoriasReciclaveis } = req.body;
-            
-            let pontoColetaData = {
-                ...req.body,
-                usuario_id, // Adicionando o ID do usuário autenticado
-            };
 
-            // Se a latitude e longitude não forem fornecidas, busca pela API
-            if (!latitude || !longitude) {
-                const local = await getCoordinates(cep);
-                pontoColetaData = {
-                    ...pontoColetaData,
-                    latitude: local.lat,
-                    longitude: local.lon,
-                };
-            }
-
+            // Verifica se os tipos de materiais recicláveis são válidas
             const categoriasValidas = await CategoriaReciclavel.findAll({
                 where: { id: categoriasReciclaveis }
             });
             if (categoriasValidas.length !== categoriasReciclaveis.length) {
                 return res.status(400).json({ mensagem: 'Um ou mais tipos de materiais recicláveis não foram cadastrados.' });
+            }
+
+            // Verifica se o ponto de coleta já existe
+            const pontoExistente = await PontoColeta.findOne({
+                where: { nomePonto: req.body.nomePonto, usuario_id }
+            });
+
+            if (pontoExistente) {
+                return res.status(400).json({ mensagem: 'Ponto de coleta já cadastrado para este usuário.' });
+            }
+
+            // Se a latitude e longitude não forem fornecidas, busca pela API
+            let pontoColetaData = { ...req.body, usuario_id };
+            if (!latitude || !longitude) {
+                const local = await getCoordinates(cep);
+                pontoColetaData.latitude = local.lat;
+                pontoColetaData.longitude = local.lon;
             }
 
             const pontoColeta = await PontoColeta.create(pontoColetaData);
@@ -62,10 +65,10 @@ class PontosController {
             // Adiciona as associações na tabela intermediária
             const associacoes = categoriasReciclaveis.map(idCategoria => ({
                 ponto_coleta_id: pontoColeta.id,
-                id_material: idCategoria
+                categoria_reciclavel_id: idCategoria
             }));
 
-            await PontoCategoriaReciclavel.bulkCreate(associacoes);
+            await PontoCategoriaReciclavel.bulkCreate(associacoes, { ignoreDuplicates: true });
 
             res.status(201).json({
                 id: pontoColeta.id,
@@ -153,7 +156,7 @@ class PontosController {
 
                     const associacoes = categoriasReciclaveis.map(idCategoria => ({
                         ponto_coleta_id: ponto.id,
-                        id_material: idCategoria
+                        categoria_reciclavel_id: idCategoria
                     }));
 
                     await PontoCategoriaReciclavel.bulkCreate(associacoes);
@@ -161,9 +164,16 @@ class PontosController {
                     return res.status(400).json({ mensagem: 'O tipo de material aceito não pode ser um array vazio.' });
                 }
             }
-
-            res.status(200).json({ ponto, categoriasReciclaveis });
-
+    
+            // Obtendo as categorias recicláveis associadas ao ponto
+            const categoriasAssociadas = await PontoCategoriaReciclavel.findAll({
+                where: { ponto_coleta_id: ponto.id }
+            });
+    
+            const idsCategoriasAssociadas = categoriasAssociadas.map(categoria => categoria.categoria_reciclavel_id);
+    
+            res.status(200).json({ ponto, categoriasReciclaveis: idsCategoriasAssociadas });
+    
         } catch (error) {
             console.error('Erro ao atualizar ponto de coleta:', error);
             if (error.name === 'ValidationError') {
@@ -192,11 +202,29 @@ class PontosController {
     async getByUserId(req, res) {
         try {
             const usuario_id = req.usuarioId;
-            const pontos = await PontoColeta.findAll({ where: { usuario_id } });
+
+            const pontos = await PontoColeta.findAll({
+                where: { usuario_id },
+                include: [
+                    {
+                        model: CategoriaReciclavel,
+                        as: 'categoriasReciclaveis', // Nome da associação que deve ser definido no modelo
+                        attributes: ['id'], // Campos a serem retornados
+                        through: { attributes: [] } // Exclui atributos da tabela de junção
+                    }
+                ]
+            });
+
             if (pontos.length === 0) {
                 return res.status(404).json({ message: 'Nenhum ponto de coleta cadastrado para este usuário.' });
             } else {
-                res.status(200).json(pontos);
+                // Mapear para incluir só os IDs dos tipos de materiais aceitos
+                const pontosComIds = pontos.map(ponto => ({
+                    ...ponto.toJSON(),
+                    categoriasReciclaveis: ponto.categoriasReciclaveis.map(categoria => categoria.id)
+                }));
+
+                res.status(200).json(pontosComIds);
             }
         } catch (error) {
             res.status(500).json({ message: 'Erro ao obter pontos de coleta', error });
@@ -208,14 +236,29 @@ class PontosController {
             const { local_id } = req.params;
             const usuario_id = req.usuarioId;
 
+            // Busca o ponto de coleta com as categorias recicláveis associadas
             const ponto = await PontoColeta.findOne({
-                where: { id: local_id, usuario_id }
+                where: { id: local_id, usuario_id },
+                include: [
+                    {
+                        model: CategoriaReciclavel,
+                        as: 'categoriasReciclaveis', // Nome da associação
+                        attributes: ['id'], // Campos a serem retornados
+                        through: { attributes: [] } // Exclui atributos da tabela de junção
+                    }
+                ]
             });
 
             if (!ponto) {
                 return res.status(404).json({ message: 'Ponto de coleta não encontrado ou não pertence ao usuário.' });
             } else {
-                res.status(200).json(ponto);
+                // Mapear para incluir só os IDs dos tipos de materiais aceitos
+                const pontoComIds = {
+                    ...ponto.toJSON(),
+                    categoriasReciclaveis: ponto.categoriasReciclaveis.map(categoria => categoria.id)
+                };
+
+                res.status(200).json(pontoComIds);
             }
 
         } catch (error) {

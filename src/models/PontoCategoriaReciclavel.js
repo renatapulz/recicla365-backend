@@ -12,7 +12,7 @@ const PontoCategoriaReciclavel = connection.define('pontos_categorias_reciclavei
     },
     allowNull: false
   },
-  id_material: {
+  categoria_reciclavel_id: {
     type: DataTypes.INTEGER,
     references: { 
       model: CategoriaReciclavel, 

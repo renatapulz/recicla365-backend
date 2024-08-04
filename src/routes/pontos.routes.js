@@ -103,13 +103,20 @@ PontosRoutes.get('/', validaToken, (req, res) => PontosController.getByUserId(re
                         url_google_maps: {
                             type: 'string',
                             example: 'https://maps.google.com/?q=-27.592727173731348,-48.54311911270999'
+                        },
+                        categoriasReciclaveis: {
+                            type: 'array',
+                            items: {
+                                type: 'integer',
+                                example: 1
+                            }
                         }
                     }
                 }
             }
         },
         #swagger.responses[404] = {
-            description: 'Nenhum ponto de coleta cadastrado para este usuário..',
+            description: 'Nenhum ponto de coleta cadastrado para este usuário.',
             schema: {
                 mensagem: 'Nenhum ponto de coleta cadastrado para este usuário.'
             }
@@ -191,6 +198,13 @@ PontosRoutes.get('/:local_id', validaToken, (req, res) => PontosController.getDe
                     url_google_maps: {
                         type: 'string',
                         example: 'https://maps.google.com/?q=-27.592727173731348,-48.54311911270999'
+                    },
+                    categoriasReciclaveis: {
+                        type: 'array',
+                        items: {
+                            type: 'integer',
+                            example: 1
+                        }
                     }
                 }
             }
@@ -314,41 +328,31 @@ PontosRoutes.put('/:local_id', validaToken, (req, res) => PontosController.updat
         type: 'integer',
         example: 1
     }
-    #swagger.requestBody = {
+    #swagger.parameters['ponto'] = {
+        in: 'body',
+        description: 'Informações do ponto de coleta a ser atualizado',
         required: true,
-        content: {
-            "application/json": {
-                schema: {
-                    type: 'object',
-                    properties: {
-                        nomePonto: { type: 'string', example: "Ponto editado" },
-                        descricaoPonto: { type: 'string', example: "Ponto destinado aos moradores do Itacorubi e região pra fazer o descarte correto dos seus resíduos." },
-                        logradouro: { type: 'string', example: "Rua Admar Gonzaga" },
-                        numero: { type: 'integer', example: 123 },
-                        complemento: { type: 'string', example: "" },
-                        bairro: { type: 'string', example: "Itacorubi" },
-                        cidade: { type: 'string', example: "Florianópolis" },
-                        estado: { type: 'string', example: "SC" },
-                        cep: { type: 'string', example: "88034-000" },
-                        latitude: { type: 'number', example: -27.579712856521738, nullable: true },
-                        longitude: { type: 'number', example: -48.507154239130436, nullable: true },
-                        categoriasReciclaveis: { 
-                            type: 'array', 
-                            items: { type: 'integer', example: 1 }, 
-                            example: [1, 2, 3]
-                        },
-                        url_google_maps: { type: 'string', example: "" }
-                    },
-                    required: ['nomePonto', 'descricaoPonto', 'logradouro', 'bairro', 'cidade', 'estado', 'cep', 'categoriasReciclaveis']
-                }
-            }
+        schema: {
+                nomePonto: "Eco ponto Itacorubi",
+                descricaoPonto: "Ponto destinado aos moradores do Itacorubi e região pra fazer o descarte correto dos seus resíduos.",
+                logradouro: "Rua Admar Gonzaga",
+                numero: 123,
+                complemento: "",
+                bairro: "Itacorubi",
+                cidade: "Florianópolis",
+                estado: "SC",
+                cep: "88034-000",
+                latitude: -27.5797,
+                longitude: -48.5072,
+                categoriasReciclaveis: [1, 2],
+                url_google_maps: "https://maps.google.com/?q=-27.5797,-48.5072"
         }
     }
     #swagger.responses[200] = {
         description: 'Ponto de coleta atualizado com sucesso',
         schema: {
             id: 1,
-            nomePonto: "Ponto editado",
+            nomePonto: "Eco ponto Itacorubi",
             descricaoPonto: "Ponto destinado aos moradores do Itacorubi e região pra fazer o descarte correto dos seus resíduos.",
             logradouro: "Rua Admar Gonzaga",
             numero: 123,
@@ -357,9 +361,10 @@ PontosRoutes.put('/:local_id', validaToken, (req, res) => PontosController.updat
             cidade: "Florianópolis",
             estado: "SC",
             cep: "88034-000",
-            latitude: -27.579712856521738,
-            longitude: -48.507154239130436,
-            url_google_maps: ""
+            latitude: -27.5797,
+            longitude: -48.5072,
+            url_google_maps: "https://maps.google.com/?q=-27.5797,-48.5072",
+            categoriasReciclaveis: [1, 2]
         }
     }
     #swagger.responses[400] = {
