@@ -64,6 +64,11 @@ class UsuariosController {
                 return res.status(404).json({ mensagem: 'Usuário não encontrado.' });
             }
 
+            // Verifica se o usuário autenticado é o dono da conta que está tentando deletar
+            if (parseInt(id) !== req.usuarioId) {
+                return res.status(403).json({ mensagem: 'Ação não permitida. Você só pode deletar sua própria conta.' });
+            }
+
             await usuario.destroy();
             res.status(204).send();
         } catch (error) {
