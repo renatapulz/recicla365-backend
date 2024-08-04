@@ -1,0 +1,1519 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Backend Recicla 365",
+    "description": "Documentação do Backend Recicla 365 usando Express e Sequelize",
+    "version": "1.0.0"
+  },
+  "basePath": "/",
+  "schemes": [
+    "http"
+  ],
+  "securityDefinitions": {
+    "apiKeyAuth": {
+      "type": "apiKey",
+      "in": "header",
+      "name": "Authorization",
+      "description": "Insira o token JWT"
+    }
+  },
+  "paths": {
+    "/login": {
+      "post": {
+        "tags": [
+          "Usuários"
+        ],
+        "description": "Endpoint para logar um usuário.",
+        "parameters": [
+          {
+            "name": "loginUsuario",
+            "in": "body",
+            "description": "Credenciais de login do usuário.",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "example": "teste@gmail.com"
+                },
+                "senha": {
+                  "type": "string",
+                  "example": "teste123"
+                }
+              },
+              "required": [
+                "email",
+                "senha"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usuário logado com sucesso.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "token": {
+                  "type": "string",
+                  "example": "jwt_token_aqui"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "400": {
+            "description": "Erro na validação dos dados de entrada.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "mensagem": {
+                  "type": "string",
+                  "example": "Erro na validação"
+                },
+                "errors": {
+                  "type": "array",
+                  "example": [
+                    "Detalhes do erro"
+                  ],
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "401": {
+            "description": "Email ou senha incorretos.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "mensagem": {
+                  "type": "string",
+                  "example": "Email ou senha incorretos"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "404": {
+            "description": "Conta não encontrada.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "mensagem": {
+                  "type": "string",
+                  "example": "Conta não encontrada"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "500": {
+            "description": "Erro ao realizar login.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "mensagem": {
+                  "type": "string",
+                  "example": "Erro ao realizar login"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/usuario/": {
+      "post": {
+        "tags": [
+          "Usuários"
+        ],
+        "description": "Endpoint para registrar um novo usuário",
+        "parameters": [
+          {
+            "name": "usuario",
+            "in": "body",
+            "description": "Informações do novo usuário",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "nome": {
+                  "type": "string",
+                  "example": "João da Silva"
+                },
+                "sexo": {
+                  "type": "string",
+                  "example": "masculino"
+                },
+                "cpf": {
+                  "type": "string",
+                  "example": "12345678900"
+                },
+                "senha": {
+                  "type": "string",
+                  "example": "teste123"
+                },
+                "email": {
+                  "type": "string",
+                  "example": "teste@gmail.com"
+                },
+                "data_de_nascimento": {
+                  "type": "string",
+                  "example": "1990-01-01"
+                },
+                "logradouro": {
+                  "type": "string",
+                  "example": "Rua Salvatina Feliciana dos Santos"
+                },
+                "numero": {
+                  "type": "number",
+                  "example": 222
+                },
+                "complemento": {
+                  "type": "string",
+                  "example": "Apto 901 B"
+                },
+                "bairro": {
+                  "type": "string",
+                  "example": "Itacorubi"
+                },
+                "cidade": {
+                  "type": "string",
+                  "example": "Florianópolis"
+                },
+                "estado": {
+                  "type": "string",
+                  "example": "SC"
+                },
+                "cep": {
+                  "type": "string",
+                  "example": "88034-600"
+                }
+              },
+              "required": [
+                "nome",
+                "sexo",
+                "cpf",
+                "senha",
+                "email",
+                "data_de_nascimento",
+                "logradouro",
+                "numero",
+                "complemento",
+                "bairro",
+                "cidade",
+                "estado",
+                "cep"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Usuário cadastrado com sucesso",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "number",
+                  "example": 1
+                },
+                "nome": {
+                  "type": "string",
+                  "example": "João da Silva"
+                },
+                "email": {
+                  "type": "string",
+                  "example": "teste@gmail.com"
+                },
+                "createdAt": {
+                  "type": "string",
+                  "example": "2024-08-02T12:00:00Z"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "400": {
+            "description": "Erro de validação ou dados duplicados",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "mensagem": {
+                  "type": "string",
+                  "example": "Erro no cadastramento"
+                },
+                "errors": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "field": {
+                        "type": "string",
+                        "example": "cpf"
+                      },
+                      "message": {
+                        "type": "string",
+                        "example": "CPF já cadastrado."
+                      }
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "500": {
+            "description": "Erro do servidor ao cadastrar o usuário",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "mensagem": {
+                  "type": "string",
+                  "example": "Erro ao cadastrar o usuário."
+                },
+                "error": {
+                  "type": "object",
+                  "properties": {}
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/usuario/{id}": {
+      "delete": {
+        "tags": [
+          "Usuários"
+        ],
+        "description": "Endpoint para deletar um usuário específico",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "ID do usuário a ser deletado",
+            "example": 1
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Usuário deletado com sucesso."
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Ação não permitida",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "mensagem": {
+                  "type": "string",
+                  "example": "Ação não permitida. Você só pode deletar sua própria conta."
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "404": {
+            "description": "Usuário não encontrado",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "mensagem": {
+                  "type": "string",
+                  "example": "Usuário não encontrado."
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "500": {
+            "description": "Erro ao deletar o usuário",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "mensagem": {
+                  "type": "string",
+                  "example": "Erro ao deletar o usuário."
+                },
+                "error": {
+                  "type": "object",
+                  "properties": {}
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/local/all": {
+      "get": {
+        "tags": [
+          "Pontos de Coleta"
+        ],
+        "description": "Endpoint para listar todos os pontos de coleta",
+        "responses": {
+          "200": {
+            "description": "Lista de todos os pontos de coleta",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "array"
+                },
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "object"
+                    },
+                    "properties": {
+                      "type": "object",
+                      "properties": {
+                        "nomePonto": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "example": "string"
+                            },
+                            "example": {
+                              "type": "string",
+                              "example": "Ponto de Coleta do Centro"
+                            }
+                          }
+                        },
+                        "descricaoPonto": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "example": "string"
+                            },
+                            "example": {
+                              "type": "string",
+                              "example": "Ponto de coleta localizado no centro de Floripa"
+                            }
+                          }
+                        },
+                        "url_google_maps": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "example": "string"
+                            },
+                            "example": {
+                              "type": "string",
+                              "example": "https://maps.google.com/?q=-27.592727173731348,-48.54311911270999"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "500": {
+            "description": "Erro do servidor ao buscar os pontos de coleta",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "mensagem": {
+                  "type": "string",
+                  "example": "Erro ao buscar os pontos de coleta."
+                },
+                "error": {
+                  "type": "object",
+                  "properties": {}
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/local/": {
+      "get": {
+        "tags": [
+          "Pontos de Coleta"
+        ],
+        "description": "Endpoint para listar todos os pontos de coleta de um usuário específico",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de pontos de coleta de um usuário",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "array"
+                },
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "object"
+                    },
+                    "properties": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "example": "integer"
+                            },
+                            "example": {
+                              "type": "number",
+                              "example": 1
+                            }
+                          }
+                        },
+                        "nomePonto": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "example": "string"
+                            },
+                            "example": {
+                              "type": "string",
+                              "example": "Ponto de Coleta do Centro"
+                            }
+                          }
+                        },
+                        "descricaoPonto": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "example": "string"
+                            },
+                            "example": {
+                              "type": "string",
+                              "example": "Ponto de coleta localizado no centro de Floripa"
+                            }
+                          }
+                        },
+                        "logradouro": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "example": "string"
+                            },
+                            "example": {
+                              "type": "string",
+                              "example": "Avenida Mauro Ramos"
+                            }
+                          }
+                        },
+                        "numero": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "example": "integer"
+                            },
+                            "example": {
+                              "type": "number",
+                              "example": 12
+                            }
+                          }
+                        },
+                        "complemento": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "example": "string"
+                            },
+                            "example": {
+                              "type": "string",
+                              "example": "Ao lado do supermercado Imperatriz"
+                            }
+                          }
+                        },
+                        "bairro": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "example": "string"
+                            },
+                            "example": {
+                              "type": "string",
+                              "example": "Centro"
+                            }
+                          }
+                        },
+                        "cidade": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "example": "string"
+                            },
+                            "example": {
+                              "type": "string",
+                              "example": "Florianópolis"
+                            }
+                          }
+                        },
+                        "estado": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "example": "string"
+                            },
+                            "example": {
+                              "type": "string",
+                              "example": "SC"
+                            }
+                          }
+                        },
+                        "cep": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "example": "string"
+                            },
+                            "example": {
+                              "type": "string",
+                              "example": "88020-300"
+                            }
+                          }
+                        },
+                        "latitude": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "example": "number"
+                            },
+                            "example": {
+                              "type": "number",
+                              "example": -27.592727173731348
+                            }
+                          }
+                        },
+                        "longitude": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "example": "number"
+                            },
+                            "example": {
+                              "type": "number",
+                              "example": -48.54311911270999
+                            }
+                          }
+                        },
+                        "url_google_maps": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "example": "string"
+                            },
+                            "example": {
+                              "type": "string",
+                              "example": "https://maps.google.com/?q=-27.592727173731348,-48.54311911270999"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Nenhum ponto de coleta cadastrado para este usuário..",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "mensagem": {
+                  "type": "string",
+                  "example": "Nenhum ponto de coleta cadastrado para este usuário."
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "500": {
+            "description": "Erro do servidor ao buscar pontos de coleta",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "mensagem": {
+                  "type": "string",
+                  "example": "Erro ao obter pontos de coleta"
+                },
+                "error": {
+                  "type": "object",
+                  "properties": {}
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Pontos de Coleta"
+        ],
+        "description": "Endpoint para criar um novo ponto de coleta",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "ponto",
+            "in": "body",
+            "description": "Informações do novo ponto de coleta",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "nomePonto": {
+                  "type": "string",
+                  "example": "Eco Ponto Itacorubi"
+                },
+                "descricaoPonto": {
+                  "type": "string",
+                  "example": "Ponto destinado aos moradores do Itacorubi e região pra fazer o descarte correto dos seus resíduos."
+                },
+                "logradouro": {
+                  "type": "string",
+                  "example": "Rua Admar Gonzaga"
+                },
+                "numero": {
+                  "type": "number",
+                  "example": 3
+                },
+                "complemento": {
+                  "type": "string",
+                  "example": ""
+                },
+                "bairro": {
+                  "type": "string",
+                  "example": "Itacorubi"
+                },
+                "cidade": {
+                  "type": "string",
+                  "example": "Florianópolis"
+                },
+                "estado": {
+                  "type": "string",
+                  "example": "SC"
+                },
+                "cep": {
+                  "type": "string",
+                  "example": "88034-000"
+                },
+                "latitude": {
+                  "type": "number",
+                  "example": -27.579712856521738
+                },
+                "longitude": {
+                  "type": "number",
+                  "example": -48.507154239130436
+                },
+                "categoriasReciclaveis": {
+                  "type": "array",
+                  "example": [
+                    1,
+                    2,
+                    3
+                  ],
+                  "items": {
+                    "type": "number"
+                  }
+                },
+                "url_google_maps": {
+                  "type": "string",
+                  "example": ""
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Ponto de coleta criado com sucesso",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "number",
+                  "example": 1
+                },
+                "nomePonto": {
+                  "type": "string",
+                  "example": "Eco Ponto Itacorubi"
+                },
+                "descricaoPonto": {
+                  "type": "string",
+                  "example": "Ponto destinado aos moradores do Itacorubi e região pra fazer o descarte correto dos seus resíduos."
+                },
+                "logradouro": {
+                  "type": "string",
+                  "example": "Rua Admar Gonzaga"
+                },
+                "numero": {
+                  "type": "number",
+                  "example": 3
+                },
+                "complemento": {
+                  "type": "string",
+                  "example": ""
+                },
+                "bairro": {
+                  "type": "string",
+                  "example": "Itacorubi"
+                },
+                "cidade": {
+                  "type": "string",
+                  "example": "Florianópolis"
+                },
+                "estado": {
+                  "type": "string",
+                  "example": "SC"
+                },
+                "cep": {
+                  "type": "string",
+                  "example": "88034-000"
+                },
+                "latitude": {
+                  "type": "number",
+                  "example": -27.579712856521738
+                },
+                "longitude": {
+                  "type": "number",
+                  "example": -48.507154239130436
+                },
+                "url_google_maps": {
+                  "type": "string",
+                  "example": ""
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "400": {
+            "description": "Erro na validação dos dados fornecidos",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "mensagem": {
+                  "type": "string",
+                  "example": "Dados inválidos."
+                },
+                "errors": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "field": {
+                        "type": "string",
+                        "example": "categoriasReciclaveis"
+                      },
+                      "message": {
+                        "type": "string",
+                        "example": "O tipo de material aceito é um campo obrigatório."
+                      }
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Erro do servidor ao criar o ponto de coleta",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "mensagem": {
+                  "type": "string",
+                  "example": "Erro ao criar ponto de coleta."
+                },
+                "error": {
+                  "type": "object",
+                  "properties": {}
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/local/{local_id}": {
+      "get": {
+        "tags": [
+          "Pontos de Coleta"
+        ],
+        "description": "Endpoint para obter detalhes de um ponto de coleta específico",
+        "parameters": [
+          {
+            "name": "local_id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "Detalhes a partir de um ponto de coleta",
+            "example": 1
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detalhes do ponto de coleta",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "object"
+                },
+                "properties": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "integer"
+                        },
+                        "example": {
+                          "type": "number",
+                          "example": 1
+                        }
+                      }
+                    },
+                    "nomePonto": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "string"
+                        },
+                        "example": {
+                          "type": "string",
+                          "example": "Ponto de Coleta do Centro"
+                        }
+                      }
+                    },
+                    "descricaoPonto": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "string"
+                        },
+                        "example": {
+                          "type": "string",
+                          "example": "Ponto de coleta localizado no centro de Floripa"
+                        }
+                      }
+                    },
+                    "logradouro": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "string"
+                        },
+                        "example": {
+                          "type": "string",
+                          "example": "Avenida Mauro Ramos"
+                        }
+                      }
+                    },
+                    "numero": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "integer"
+                        },
+                        "example": {
+                          "type": "number",
+                          "example": 12
+                        }
+                      }
+                    },
+                    "complemento": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "string"
+                        },
+                        "example": {
+                          "type": "string",
+                          "example": "Ao lado do supermercado Imperatriz"
+                        }
+                      }
+                    },
+                    "bairro": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "string"
+                        },
+                        "example": {
+                          "type": "string",
+                          "example": "Centro"
+                        }
+                      }
+                    },
+                    "cidade": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "string"
+                        },
+                        "example": {
+                          "type": "string",
+                          "example": "Florianópolis"
+                        }
+                      }
+                    },
+                    "estado": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "string"
+                        },
+                        "example": {
+                          "type": "string",
+                          "example": "SC"
+                        }
+                      }
+                    },
+                    "cep": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "string"
+                        },
+                        "example": {
+                          "type": "string",
+                          "example": "88020-300"
+                        }
+                      }
+                    },
+                    "latitude": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "number"
+                        },
+                        "example": {
+                          "type": "number",
+                          "example": -27.592727173731348
+                        }
+                      }
+                    },
+                    "longitude": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "number"
+                        },
+                        "example": {
+                          "type": "number",
+                          "example": -48.54311911270999
+                        }
+                      }
+                    },
+                    "url_google_maps": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "string"
+                        },
+                        "example": {
+                          "type": "string",
+                          "example": "https://maps.google.com/?q=-27.592727173731348,-48.54311911270999"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Ponto de coleta não encontrado ou não pertence ao usuário",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "mensagem": {
+                  "type": "string",
+                  "example": "Ponto de coleta não encontrado ou não pertence ao usuário."
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "500": {
+            "description": "Erro do servidor ao obter detalhes do ponto de coleta",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "mensagem": {
+                  "type": "string",
+                  "example": "Erro ao obter detalhes do ponto de coleta."
+                },
+                "error": {
+                  "type": "object",
+                  "properties": {}
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Pontos de Coleta"
+        ],
+        "description": "Endpoint para atualizar um ponto de coleta existente",
+        "parameters": [
+          {
+            "name": "local_id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "ID do ponto de coleta para atualizar",
+            "example": 1
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ponto de coleta atualizado com sucesso",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "number",
+                  "example": 1
+                },
+                "nomePonto": {
+                  "type": "string",
+                  "example": "Ponto editado"
+                },
+                "descricaoPonto": {
+                  "type": "string",
+                  "example": "Ponto destinado aos moradores do Itacorubi e região pra fazer o descarte correto dos seus resíduos."
+                },
+                "logradouro": {
+                  "type": "string",
+                  "example": "Rua Admar Gonzaga"
+                },
+                "numero": {
+                  "type": "number",
+                  "example": 123
+                },
+                "complemento": {
+                  "type": "string",
+                  "example": ""
+                },
+                "bairro": {
+                  "type": "string",
+                  "example": "Itacorubi"
+                },
+                "cidade": {
+                  "type": "string",
+                  "example": "Florianópolis"
+                },
+                "estado": {
+                  "type": "string",
+                  "example": "SC"
+                },
+                "cep": {
+                  "type": "string",
+                  "example": "88034-000"
+                },
+                "latitude": {
+                  "type": "number",
+                  "example": -27.579712856521738
+                },
+                "longitude": {
+                  "type": "number",
+                  "example": -48.507154239130436
+                },
+                "url_google_maps": {
+                  "type": "string",
+                  "example": ""
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "400": {
+            "description": "Erro de validação dos dados fornecidos",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "mensagem": {
+                  "type": "string",
+                  "example": "Dados inválidos."
+                },
+                "errors": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "field": {
+                        "type": "string",
+                        "example": "categoriasReciclaveis"
+                      },
+                      "message": {
+                        "type": "string",
+                        "example": "O tipo de material aceito é um campo obrigatório."
+                      }
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Ponto de coleta não encontrado ou não pertence ao usuário",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "mensagem": {
+                  "type": "string",
+                  "example": "Ponto de coleta não encontrado ou não pertence ao usuário."
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "500": {
+            "description": "Erro do servidor ao atualizar o ponto de coleta",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "mensagem": {
+                  "type": "string",
+                  "example": "Erro ao atualizar o ponto de coleta."
+                },
+                "error": {
+                  "type": "object",
+                  "properties": {}
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "nomePonto": {
+                    "type": "string",
+                    "example": "Ponto editado"
+                  },
+                  "descricaoPonto": {
+                    "type": "string",
+                    "example": "Ponto destinado aos moradores do Itacorubi e região pra fazer o descarte correto dos seus resíduos."
+                  },
+                  "logradouro": {
+                    "type": "string",
+                    "example": "Rua Admar Gonzaga"
+                  },
+                  "numero": {
+                    "type": "integer",
+                    "example": 123
+                  },
+                  "complemento": {
+                    "type": "string",
+                    "example": ""
+                  },
+                  "bairro": {
+                    "type": "string",
+                    "example": "Itacorubi"
+                  },
+                  "cidade": {
+                    "type": "string",
+                    "example": "Florianópolis"
+                  },
+                  "estado": {
+                    "type": "string",
+                    "example": "SC"
+                  },
+                  "cep": {
+                    "type": "string",
+                    "example": "88034-000"
+                  },
+                  "latitude": {
+                    "type": "number",
+                    "example": -27.579712856521738,
+                    "nullable": true
+                  },
+                  "longitude": {
+                    "type": "number",
+                    "example": -48.507154239130436,
+                    "nullable": true
+                  },
+                  "categoriasReciclaveis": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer",
+                      "example": 1
+                    },
+                    "example": [
+                      1,
+                      2,
+                      3
+                    ]
+                  },
+                  "url_google_maps": {
+                    "type": "string",
+                    "example": ""
+                  }
+                },
+                "required": [
+                  "nomePonto",
+                  "descricaoPonto",
+                  "logradouro",
+                  "bairro",
+                  "cidade",
+                  "estado",
+                  "cep",
+                  "categoriasReciclaveis"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Pontos de Coleta"
+        ],
+        "description": "Endpoint para deletar um ponto de coleta",
+        "parameters": [
+          {
+            "name": "local_id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "ID do ponto de coleta a ser deletado",
+            "example": 1
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Ponto de coleta deletado com sucesso",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Ponto de coleta deletado com sucesso."
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Ponto de coleta não encontrado ou não pertence ao usuário",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "mensagem": {
+                  "type": "string",
+                  "example": "Ponto de coleta não encontrado ou não pertence ao usuário."
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "500": {
+            "description": "Erro do servidor ao deletar o ponto de coleta",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "mensagem": {
+                  "type": "string",
+                  "example": "Erro ao deletar o ponto de coleta."
+                },
+                "error": {
+                  "type": "object",
+                  "properties": {}
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "apiKeyAuth": []
+    }
+  ]
+}

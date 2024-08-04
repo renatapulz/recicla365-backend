@@ -3,7 +3,6 @@ const linkMapApi = 'https://nominatim.openstreetmap.org/search.php';
 
 async function getCoordinates(cep) {
     try {
-        // Corrija a URL adicionando o '&' entre os parâmetros
         const response = await axios.get(`${linkMapApi}?q=${encodeURIComponent(cep)}&countrycodes=br&format=jsonv2`, {
             headers: {
                 'User-Agent': 'Mozilla/5.0'
