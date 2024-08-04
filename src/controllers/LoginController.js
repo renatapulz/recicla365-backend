@@ -12,7 +12,12 @@ class LoginController {
 
         try {
             await schema.validate(request.body, { abortEarly: false });
-            const dados = request.body;
+            
+            const dados = {
+                ...request.body,
+                email: request.body.email.toLowerCase()
+            };
+            
             const usuario = await Usuario.findOne({
                 where: {
                     email: dados.email

@@ -28,7 +28,7 @@ class UsuariosController {
                 where: {
                     [Op.or]: [
                         { cpf: req.body.cpf },
-                        { email: req.body.email }
+                        { email: req.body.email.toLowerCase() }
                     ]
                 }
             });
@@ -39,7 +39,11 @@ class UsuariosController {
                 });
             }
 
-            const usuario = await Usuario.create(req.body);
+            const usuario = await Usuario.create({
+                ...req.body,
+                email: req.body.email.toLowerCase()
+            });
+            
             res.status(201).json({
                 id: usuario.id,
                 nome: usuario.nome,
