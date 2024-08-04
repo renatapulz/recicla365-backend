@@ -1,4 +1,5 @@
 const Usuario = require('../models/Usuario')
+const PontoColeta = require('../models/PontoColeta')
 const yup = require('yup')
 const { Op } = require('sequelize');
 
@@ -67,6 +68,12 @@ class UsuariosController {
             // Verifica se o usuário autenticado é o dono da conta que está tentando deletar
             if (parseInt(id) !== req.usuarioId) {
                 return res.status(403).json({ mensagem: 'Ação não permitida. Você só pode deletar sua própria conta.' });
+            }
+
+            // Verifica se o usuário possui pontos de coleta associados
+            const pontosDeColeta = await PontoColeta.findAll({ where: { usuario_id: id } });
+            if (pontosDeColeta.length > 0) {
+                return res.status(400).json({ mensagem: 'Você possui pontos de coleta cadastrados. Por favor, exclua todos os pontos de coleta antes de deletar sua conta.' });
             }
 
             await usuario.destroy();

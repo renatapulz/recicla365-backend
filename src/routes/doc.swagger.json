@@ -330,7 +330,19 @@
             "description": "Usuário deletado com sucesso."
           },
           "400": {
-            "description": "Bad Request"
+            "description": "Usuário possui pontos de coleta cadastrados. Por favor, exclua todos os pontos de coleta antes de deletar a conta.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "mensagem": {
+                  "type": "string",
+                  "example": "Você possui pontos de coleta cadastrados. Por favor, exclua todos os pontos de coleta antes de deletar sua conta."
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
           },
           "401": {
             "description": "Unauthorized"

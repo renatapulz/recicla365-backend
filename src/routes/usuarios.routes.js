@@ -81,6 +81,12 @@ UsuariosRoutes.delete('/:id', validaToken, (req, res) => UsuariosController.dele
         #swagger.responses[204] = {
             description: 'Usuário deletado com sucesso.'
         }
+        #swagger.responses[400] = {
+            description: 'Usuário possui pontos de coleta cadastrados. Por favor, exclua todos os pontos de coleta antes de deletar a conta.',
+            schema: {
+            mensagem: 'Você possui pontos de coleta cadastrados. Por favor, exclua todos os pontos de coleta antes de deletar sua conta.'
+            }
+        }
         #swagger.responses[403] = {
             description: 'Ação não permitida',
             schema: {
