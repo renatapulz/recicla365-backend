@@ -697,6 +697,28 @@
                               "example": "https://maps.google.com/?q=-27.592727173731348,-48.54311911270999"
                             }
                           }
+                        },
+                        "categoriasReciclaveis": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "example": "array"
+                            },
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "type": {
+                                  "type": "string",
+                                  "example": "integer"
+                                },
+                                "example": {
+                                  "type": "number",
+                                  "example": 1
+                                }
+                              }
+                            }
+                          }
                         }
                       }
                     }
@@ -715,7 +737,7 @@
             "description": "Unauthorized"
           },
           "404": {
-            "description": "Nenhum ponto de coleta cadastrado para este usuário..",
+            "description": "Nenhum ponto de coleta cadastrado para este usuário.",
             "schema": {
               "type": "object",
               "properties": {
@@ -1154,6 +1176,28 @@
                           "example": "https://maps.google.com/?q=-27.592727173731348,-48.54311911270999"
                         }
                       }
+                    },
+                    "categoriasReciclaveis": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "array"
+                        },
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "example": "integer"
+                            },
+                            "example": {
+                              "type": "number",
+                              "example": 1
+                            }
+                          }
+                        }
+                      }
                     }
                   }
                 }
@@ -1223,21 +1267,18 @@
             "name": "authorization",
             "in": "header",
             "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Ponto de coleta atualizado com sucesso",
+          },
+          {
+            "name": "ponto",
+            "in": "body",
+            "description": "Informações do ponto de coleta a ser atualizado",
+            "required": true,
             "schema": {
               "type": "object",
               "properties": {
-                "id": {
-                  "type": "number",
-                  "example": 1
-                },
                 "nomePonto": {
                   "type": "string",
-                  "example": "Ponto editado"
+                  "example": "Eco ponto Itacorubi"
                 },
                 "descricaoPonto": {
                   "type": "string",
@@ -1273,15 +1314,97 @@
                 },
                 "latitude": {
                   "type": "number",
-                  "example": -27.579712856521738
+                  "example": -27.5797
                 },
                 "longitude": {
                   "type": "number",
-                  "example": -48.507154239130436
+                  "example": -48.5072
+                },
+                "categoriasReciclaveis": {
+                  "type": "array",
+                  "example": [
+                    1,
+                    2
+                  ],
+                  "items": {
+                    "type": "number"
+                  }
                 },
                 "url_google_maps": {
                   "type": "string",
+                  "example": "https://maps.google.com/?q=-27.5797,-48.5072"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ponto de coleta atualizado com sucesso",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "number",
+                  "example": 1
+                },
+                "nomePonto": {
+                  "type": "string",
+                  "example": "Eco ponto Itacorubi"
+                },
+                "descricaoPonto": {
+                  "type": "string",
+                  "example": "Ponto destinado aos moradores do Itacorubi e região pra fazer o descarte correto dos seus resíduos."
+                },
+                "logradouro": {
+                  "type": "string",
+                  "example": "Rua Admar Gonzaga"
+                },
+                "numero": {
+                  "type": "number",
+                  "example": 123
+                },
+                "complemento": {
+                  "type": "string",
                   "example": ""
+                },
+                "bairro": {
+                  "type": "string",
+                  "example": "Itacorubi"
+                },
+                "cidade": {
+                  "type": "string",
+                  "example": "Florianópolis"
+                },
+                "estado": {
+                  "type": "string",
+                  "example": "SC"
+                },
+                "cep": {
+                  "type": "string",
+                  "example": "88034-000"
+                },
+                "latitude": {
+                  "type": "number",
+                  "example": -27.5797
+                },
+                "longitude": {
+                  "type": "number",
+                  "example": -48.5072
+                },
+                "url_google_maps": {
+                  "type": "string",
+                  "example": "https://maps.google.com/?q=-27.5797,-48.5072"
+                },
+                "categoriasReciclaveis": {
+                  "type": "array",
+                  "example": [
+                    1,
+                    2
+                  ],
+                  "items": {
+                    "type": "number"
+                  }
                 }
               },
               "xml": {
@@ -1354,90 +1477,6 @@
               },
               "xml": {
                 "name": "main"
-              }
-            }
-          }
-        },
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "nomePonto": {
-                    "type": "string",
-                    "example": "Ponto editado"
-                  },
-                  "descricaoPonto": {
-                    "type": "string",
-                    "example": "Ponto destinado aos moradores do Itacorubi e região pra fazer o descarte correto dos seus resíduos."
-                  },
-                  "logradouro": {
-                    "type": "string",
-                    "example": "Rua Admar Gonzaga"
-                  },
-                  "numero": {
-                    "type": "integer",
-                    "example": 123
-                  },
-                  "complemento": {
-                    "type": "string",
-                    "example": ""
-                  },
-                  "bairro": {
-                    "type": "string",
-                    "example": "Itacorubi"
-                  },
-                  "cidade": {
-                    "type": "string",
-                    "example": "Florianópolis"
-                  },
-                  "estado": {
-                    "type": "string",
-                    "example": "SC"
-                  },
-                  "cep": {
-                    "type": "string",
-                    "example": "88034-000"
-                  },
-                  "latitude": {
-                    "type": "number",
-                    "example": -27.579712856521738,
-                    "nullable": true
-                  },
-                  "longitude": {
-                    "type": "number",
-                    "example": -48.507154239130436,
-                    "nullable": true
-                  },
-                  "categoriasReciclaveis": {
-                    "type": "array",
-                    "items": {
-                      "type": "integer",
-                      "example": 1
-                    },
-                    "example": [
-                      1,
-                      2,
-                      3
-                    ]
-                  },
-                  "url_google_maps": {
-                    "type": "string",
-                    "example": ""
-                  }
-                },
-                "required": [
-                  "nomePonto",
-                  "descricaoPonto",
-                  "logradouro",
-                  "bairro",
-                  "cidade",
-                  "estado",
-                  "cep",
-                  "categoriasReciclaveis"
-                ]
               }
             }
           }

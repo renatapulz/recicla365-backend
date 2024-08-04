@@ -4,12 +4,6 @@
 module.exports = {
   async up (queryInterface, Sequelize) {
     await queryInterface.createTable('pontos_categorias_reciclaveis', {
-      id: {
-        type: Sequelize.INTEGER,
-        autoIncrement: true,
-        primaryKey: true,
-        allowNull: false
-      },
       ponto_coleta_id: {
         type: Sequelize.INTEGER,
         references: { 
@@ -18,10 +12,9 @@ module.exports = {
         },
         allowNull: false,
         onUpdate: 'CASCADE', // se atualizo o ponto_coleta_id, isso atualiza os registros associados a ela na tabela intermediária automaticamente.
-        onDelete: 'CASCADE', // se deleto o ponto_coleta_id,os registros associados a ele na tabela intermediária são apagados automaticamente. 
-        primaryKey: true, // defino para garantir que cada combinação seja única. 
+        onDelete: 'CASCADE', // se deleto o ponto_coleta_id,os registros associados a ele na tabela intermediária são apagados automaticamente.
       },
-      id_material: {
+      categoria_reciclavel_id: {
         type: Sequelize.INTEGER,
         references: { 
           model: 'categorias_reciclaveis', 
@@ -30,7 +23,6 @@ module.exports = {
         allowNull: false,
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
-        primaryKey: true,
       },
       createdAt: {
         allowNull: false,
@@ -40,6 +32,13 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE,
       }
+    });
+
+    // Adicionar chave primária composta
+    await queryInterface.addConstraint('pontos_categorias_reciclaveis', { // uso addConstraint para garantir que a combinação de ponto_coleta_id e categoria_reciclavel_id seja único
+      fields: ['ponto_coleta_id', 'categoria_reciclavel_id'],
+      type: 'primary key',
+      name: 'ponto_categoria_reciclavel_pk'
     });
   },
 
