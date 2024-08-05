@@ -7,7 +7,7 @@ const PontosRoutes = new Router();
 PontosRoutes.get('/all', (req, res) => PontosController.getAll(req, res)
     /*
         #swagger.tags = ['Pontos de Coleta'],
-        #swagger.description = 'Endpoint para listar todos os pontos de coleta',
+        #swagger.description = 'Endpoint para listar todos os pontos de coleta de forma resumida para o acesso de usuários autenticados e não autenticados',
         #swagger.responses[200] = {
             description: 'Lista de todos os pontos de coleta',
             schema: {
@@ -454,6 +454,39 @@ PontosRoutes.delete('/:local_id', validaToken, (req, res) => PontosController.de
             }
         }
     */
+);
+
+PontosRoutes.get('/:local_id/maps', validaToken, (req, res) => PontosController.getMapLinkById(req, res)
+    /*
+    #swagger.tags = ['Pontos de Coleta']
+    #swagger.description = 'Endpoint para obter o link do Google Maps de um ponto de coleta específico'
+    #swagger.parameters['local_id'] = {
+        in: 'path',
+        description: 'ID do ponto de coleta',
+        required: true,
+        type: 'integer',
+        example: 1
+    }
+    #swagger.responses[200] = {
+        description: 'Link do Google Maps do ponto de coleta',
+        schema: {
+            url_google_maps: 'https://maps.google.com/?q=-27.5797,-48.5072'
+        }
+    }
+    #swagger.responses[404] = {
+        description: 'Ponto de coleta não encontrado ou não pertence ao usuário',
+        schema: {
+            message: 'Ponto de coleta não encontrado ou não pertence ao usuário.'
+        }
+    }
+    #swagger.responses[500] = {
+        description: 'Erro ao obter o link do mapa do ponto de coleta',
+        schema: {
+            message: 'Erro ao obter o link do mapa do ponto de coleta.',
+            error: {}
+        }
+    }
+*/
 );
 
 module.exports = PontosRoutes;

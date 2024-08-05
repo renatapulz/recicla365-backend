@@ -288,6 +288,25 @@ class PontosController {
         }
     }
 
+    async getMapLinkById(req, res) {
+        try {
+            const { local_id } = req.params;
+            const usuario_id = req.usuarioId;
+    
+            const ponto = await PontoColeta.findOne({
+                where: { id: local_id, usuario_id }
+            });
+    
+            if (!ponto) {
+                return res.status(404).json({ message: 'Ponto de coleta não encontrado ou não pertence ao usuário.' });
+            }
+            
+            return res.status(200).json({ url_google_maps: ponto.url_google_maps });
+        } catch (error) {
+            return res.status(500).json({ message: 'Erro ao obter o link do mapa do ponto de coleta.', error });
+        }
+    }
+    
 }
 
 module.exports = new PontosController()
