@@ -404,7 +404,7 @@
         "tags": [
           "Pontos de Coleta"
         ],
-        "description": "Endpoint para listar todos os pontos de coleta",
+        "description": "Endpoint para listar todos os pontos de coleta de forma resumida para o acesso de usuários autenticados e não autenticados",
         "responses": {
           "200": {
             "description": "Lista de todos os pontos de coleta",
@@ -1547,6 +1547,86 @@
                 "mensagem": {
                   "type": "string",
                   "example": "Erro ao deletar o ponto de coleta."
+                },
+                "error": {
+                  "type": "object",
+                  "properties": {}
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/local/{local_id}/maps": {
+      "get": {
+        "tags": [
+          "Pontos de Coleta"
+        ],
+        "description": "Endpoint para obter o link do Google Maps de um ponto de coleta específico",
+        "parameters": [
+          {
+            "name": "local_id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "ID do ponto de coleta",
+            "example": 1
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Link do Google Maps do ponto de coleta",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "url_google_maps": {
+                  "type": "string",
+                  "example": "https://maps.google.com/?q=-27.5797,-48.5072"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Ponto de coleta não encontrado ou não pertence ao usuário",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Ponto de coleta não encontrado ou não pertence ao usuário."
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "500": {
+            "description": "Erro ao obter o link do mapa do ponto de coleta",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Erro ao obter o link do mapa do ponto de coleta."
                 },
                 "error": {
                   "type": "object",
