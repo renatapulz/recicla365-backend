@@ -2,7 +2,7 @@
 
 ## Objetivo
 
-O projeto **Recicla365 Backend** é um MVP da aplicação "Recicla 365" desenvolvida no módulo anterior, utilizando Node.js, Express e PostgreSQL. Nela é possível gerenciar pontos de coleta de recicláveis e seus respectivos usuários através de uma API RESTful.
+O projeto **Recicla365 Backend** é um MVP da aplicação "Recicla 365", desenvolvido no módulo anterior. A aplicação permite gerenciar pontos de coleta de recicláveis e seus respectivos usuários por meio de APIs com os dados sendo armazenados no banco de dados.
 
 ## Tecnologias Utilizadas
 
